@@ -9,39 +9,39 @@ using UnityEngine.UI;
 
 public class SettingsMenu : MonoBehaviour
 {
-    public AudioMixer audioMixer;
-    Resolution[] resolutions;
-    public Dropdown resolutionDropdown;
-    public Toggle fullscreen, vsync;
+    [SerializeField] private AudioMixer audioMixer;
+    [SerializeField] private Resolution[] resolutions;
+    [SerializeField] private Dropdown resolutionDropdown;
+    [SerializeField] private Toggle fullscreen, vsync;
     public void SetVolume(float volume) {
         audioMixer.SetFloat("Volume", volume);
-        Debug.Log(volume);
     }
 
-    public void SetFullScreen(bool isFull) {
-        Screen.fullScreen = isFull;
-    }
-
-    public void SetRes(int res) {
+    public void SetRes(int res, bool fullscreen) {
         Resolution resolution = resolutions[res];
-        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+        Screen.SetResolution(resolution.width, resolution.height, fullscreen);
     }
     void Start()
     {
         SetResolutions();
+        SetToggles();
+    }
+
+    private void SetToggles()
+    {
         fullscreen.isOn = Screen.fullScreen;
 
         if (QualitySettings.vSyncCount == 0)
         {
             vsync.isOn = false;
         }
-        else {
+        else
+        {
             vsync.isOn = true;
         }
-
     }
 
-    public void SetResolutions() {
+    private void SetResolutions() {
         resolutions = Screen.resolutions;
         resolutionDropdown.ClearOptions();
         List<string> options = new List<string>();
@@ -68,9 +68,7 @@ public class SettingsMenu : MonoBehaviour
         else { 
             QualitySettings.vSyncCount = 0;
         }
-        SetRes(resolutionDropdown.value);
-        SetFullScreen(fullscreen);
-
+        SetRes(resolutionDropdown.value, fullscreen.isOn);
     }
 
     public void CancelSettings() {

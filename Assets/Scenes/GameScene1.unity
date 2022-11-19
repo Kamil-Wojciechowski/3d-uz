@@ -7256,7 +7256,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 288929097}
         m_TargetAssemblyTypeName: GamePause, Assembly-CSharp
-        m_MethodName: onResumeGame
+        m_MethodName: OnResumeGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

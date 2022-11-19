@@ -7,30 +7,30 @@ using UnityEngine.UI;
 
 public class GamePause : MonoBehaviour
 {
-    public KeyCode escape = KeyCode.Escape;
-  
+    [SerializeField] private KeyCode escape = KeyCode.Escape;
     [SerializeField] private GameObject Score;
     [SerializeField] private GameObject PauseMenu;
     void Start()
     {
-        setVisibility(true);
+        Time.timeScale = 1.0f;
+        SetVisibility(true);
     }
     void Update()
     {
         if (Input.GetKeyDown(escape))
         {
             Time.timeScale = 0.0f;
-            setVisibility(false);
+            SetVisibility(false);
         }
     }
 
-    private void setVisibility(bool visible) { 
+    private void SetVisibility(bool visible) { 
         PauseMenu.SetActive(!visible);
         Score.SetActive(visible);
     }
-    public void onResumeGame() {
+    public void OnResumeGame() {
         Time.timeScale = 1.0f;
-        setVisibility(true);
+        SetVisibility(true);
     }
     public void OnExitGame()
     {

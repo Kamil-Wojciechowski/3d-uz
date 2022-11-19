@@ -14,7 +14,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private MouseButton Defense;
     [SerializeField] private KeyCode altAttack;
     [SerializeField] private KeyCode altDefense;
-    [SerializeField] private int speed;
+    public int speed;
 
     private Rigidbody2D rb2d;
     private Vector3 startPosition;
@@ -25,11 +25,11 @@ public class PlayerMovement : MonoBehaviour
     }
     void Update()
     {
-        movement();
-        playerFace();
+        Movement();
+        PlayerFaceDirection();
     }
 
-    private void movement()
+    private void Movement()
     {
         if (Input.GetKey(moveUp))
         {
@@ -50,7 +50,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
-    private void playerFace()
+    private void PlayerFaceDirection()
     {
         Vector3 mousePosition = Input.mousePosition;
         mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
