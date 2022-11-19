@@ -7,37 +7,38 @@ using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour
 {
-    public GameObject Author;
-    public GameObject StartGame;
-    public GameObject EndGame;
-    public GameObject Settings;
-    public GameObject LoadGame;
-    public GameObject Logo1;
-    public GameObject Logo2;
-    public GameObject Bye;
+    [SerializeField] private GameObject Author;
+    [SerializeField] private GameObject StartGame;
+    [SerializeField] private GameObject EndGame;
+    [SerializeField] private GameObject Settings;
+    [SerializeField] private GameObject Logo1;
+    [SerializeField] private GameObject Logo2;
+    [SerializeField] private GameObject Bye;
 
 
     void Start()
     {
-        Bye.SetActive(false);
-        Logo2.SetActive(false);
-        LoadGame.GetComponent<Button>().interactable = false;
+        SetExitLogo(false);
     }
 
     public void OnEndGame()
     {
-        Bye.SetActive(true);
-        Logo2.SetActive(true);
-
-        Author.SetActive(false);
-        StartGame.SetActive(false);
-        Settings.SetActive(false);
-        EndGame.SetActive(false);
-        LoadGame.SetActive(false);
-        Logo1.SetActive(false);
+        SetExitLogo(true);
 
         delay(1000);
         Application.Quit();
+    }
+
+    private void SetExitLogo(bool status)
+    {
+        Bye.SetActive(status);
+        Logo2.SetActive(status);
+
+        Author.SetActive(!status);
+        StartGame.SetActive(!status);
+        Settings.SetActive(!status);
+        EndGame.SetActive(!status);
+        Logo1.SetActive(!status);
     }
 
     public void OnStartGame()
