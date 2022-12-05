@@ -1,13 +1,13 @@
 using Enemy;
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float health;
+    private TextMeshProUGUI healthText;
     [SerializeField] private KeyCode moveUp;
     [SerializeField] private KeyCode moveDown;
     [SerializeField] private KeyCode moveLeft;
@@ -16,6 +16,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private MouseButton Defense;
     [SerializeField] private KeyCode altAttack;
     [SerializeField] private KeyCode altDefense;
+    
     public int speed;
 
     private Rigidbody2D rb2d;
@@ -25,14 +26,19 @@ public class PlayerMovement : MonoBehaviour
     {
         rb2d = GetComponent<Rigidbody2D>();
         startPosition = transform.position;
+        healthText = GameObject.Find("HP").GetComponent<TextMeshProUGUI>();
     }
     void Update()
     {
         Movement();
         PlayerFaceDirection();
         damageManager();
+        
+        if(healthText != null)
+        {
+            healthText.text = Convert.ToInt32(health).ToString();
+        }
     }
-
     private void Movement()
     {
         if(canMove)
@@ -54,9 +60,7 @@ public class PlayerMovement : MonoBehaviour
                 transform.Translate(new Vector3(-5.0f, 0, 0) * speed * Time.deltaTime);
             }
         }
-        
     }
-
 
     private void PlayerFaceDirection()
     {
@@ -84,7 +88,7 @@ public class PlayerMovement : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.gameObject.tag == "Enemy")
+        if(collision.gameObject.CompareTag("Enemy"))
         {
             float enemyDamage = collision.gameObject.GetComponent<EnemyProperties>().GetDamage();
             health -= enemyDamage;
