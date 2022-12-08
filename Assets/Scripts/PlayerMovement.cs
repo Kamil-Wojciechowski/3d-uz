@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : MonoBehaviourPunCallbacks
 {
 
     [SerializeField] private KeyCode moveUp;
@@ -16,17 +17,16 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private KeyCode altDefense;
     public int speed;
 
-    private Rigidbody2D rb2d;
-    private Vector3 startPosition;
     void Start()
     {
-        rb2d = GetComponent<Rigidbody2D>();
-        startPosition = transform.position;
     }
+    
     void Update()
     {
-        Movement();
-        PlayerFaceDirection();
+        if (photonView.IsMine) {
+            Movement();
+            PlayerFaceDirection();    
+        }
     }
 
     private void Movement()
