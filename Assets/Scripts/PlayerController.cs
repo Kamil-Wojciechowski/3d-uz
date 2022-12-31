@@ -73,7 +73,7 @@ public class PlayerController : MonoBehaviour
 
     private void AttackManager()
     {
-        if (Input.GetMouseButtonDown((int) Attack))
+        if (Input.GetMouseButtonDown((int) Attack) && canMove)
         {
             if (animator.GetCurrentAnimatorStateInfo(0).IsName("stay"))
             {

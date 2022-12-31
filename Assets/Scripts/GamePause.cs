@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -37,5 +38,6 @@ public class GamePause : MonoBehaviour
     public void OnExitGame()
     {
         SceneManager.LoadScene("MainMenu");
+        PhotonNetwork.Disconnect();
     }
 }
