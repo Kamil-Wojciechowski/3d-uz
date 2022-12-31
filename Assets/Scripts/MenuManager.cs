@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 
 
@@ -14,11 +14,13 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private GameObject Logo1;
     [SerializeField] private GameObject Logo2;
     [SerializeField] private GameObject Bye;
-
+    [SerializeField] private AudioMixer audioMixer;
 
     void Start()
     {
         SetExitLogo(false);
+        audioMixer.SetFloat("Volume", 5.0f);
+        //Music: Bensound.com/free-music-for-videos
     }
 
     public void OnEndGame()

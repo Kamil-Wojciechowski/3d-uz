@@ -44,7 +44,7 @@ public class PlayerController : MonoBehaviour
 
             if (healthText != null)
             {
-                healthText.text = Convert.ToInt32(health).ToString();
+                healthText.text = "HP: "+Convert.ToInt32(health).ToString();
             }
         }
     }
