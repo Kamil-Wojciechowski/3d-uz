@@ -12,7 +12,6 @@ namespace Enemy {
 
         private void Start() {
             this.properties = this.GetComponent<EnemyProperties>();
-            this.minimumDistance = this.player.transform.localScale.x * distance;
         }
 
         private void Update() {

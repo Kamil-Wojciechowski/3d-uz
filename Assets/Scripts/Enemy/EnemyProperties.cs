@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using Weapon;
 using Random = UnityEngine.Random;
 
@@ -11,31 +12,35 @@ namespace Enemy {
         [SerializeField] private float maxHealth;
         [SerializeField] private float minDamage;
         [SerializeField] private float maxDamage;
+        [SerializeField] private Slider slider;
         private float damage;
 		private float health;
-		private Boolean isDead = false;
+        private float setHealth;
+        private Boolean isDead = false;
 		private Boolean isCounted = false;
 		private TextMeshProUGUI scoreText;
-        [SerializeField] public int followDistance;
+        [SerializeField] public float minimumFollowDistance;
+        [SerializeField] public float maximumFollowDistance;
 
-		void Start()
+        void Start()
 		{
 			damage = Random.Range(minDamage, maxDamage);	
 			health = Random.Range(minHealth, maxHealth);
-			scoreText = GameObject.Find("Score").GetComponent<TextMeshProUGUI>();
+			setHealth = health;
+            scoreText = GameObject.Find("Score").GetComponent<TextMeshProUGUI>();
+			slider.value = CalculateHealth();
 		}
 
 		void Update()
 		{
-			if(isDead)
+            slider.value = CalculateHealth();
+
+            if (isDead)
 			{
-				Debug.Log("Enemy Dead v2");
-                if(!isCounted)
+				if(!isCounted)
 				{
-                    Debug.Log("Is not counted");
                     if (scoreText != null)
 					{
-                        Debug.Log("text is not null");
                         int score = Convert.ToInt32(scoreText.text.Substring(6));
 						Debug.Log(score);
 						scoreText.text = "Score: " + (score+1).ToString();
@@ -73,6 +78,12 @@ namespace Enemy {
 		public Boolean GetIsDead()
 		{
 			return isDead;
-		} 
-	}	
+		}
+
+        private float CalculateHealth()
+		{
+			return health / setHealth;
+		}
+
+    }	
 }

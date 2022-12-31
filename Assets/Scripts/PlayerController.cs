@@ -3,6 +3,7 @@ using System;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using Weapon;
 
 public class PlayerController : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private MouseButton Defense;
     [SerializeField] private KeyCode altAttack;
     [SerializeField] private KeyCode altDefense;
-    
+    private Animator animator;    
     public int speed;
 
     private Rigidbody2D rb2d;
@@ -27,10 +28,12 @@ public class PlayerController : MonoBehaviour
         rb2d = GetComponent<Rigidbody2D>();
         startPosition = transform.position;
         healthText = GameObject.Find("HP").GetComponent<TextMeshProUGUI>();
+        animator = GetComponentInChildren<Animator>();
     }
     void Update()
     {
         Movement();
+        AttackManager();
         PlayerFaceDirection();
         damageManager();
         
@@ -62,6 +65,21 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void AttackManager()
+    {
+        if (Input.GetMouseButtonDown((int) Attack))
+        {
+            if (animator.GetCurrentAnimatorStateInfo(0).IsName("stay"))
+            {
+                animator.SetBool("cli", true);
+            }
+        }
+
+        if(animator.GetCurrentAnimatorStateInfo(0).IsName("back")) {
+            animator.SetBool("cli", false);
+        }
+    }
+
     private void PlayerFaceDirection()
     {
         if(canMove)
@@ -88,10 +106,17 @@ public class PlayerController : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.gameObject.CompareTag("Enemy"))
+        if (collision.gameObject.CompareTag("Enemy"))
         {
             float enemyDamage = collision.gameObject.GetComponent<EnemyProperties>().GetDamage();
-            health -= enemyDamage;
+            
+            if (health <= 0)
+            {
+                health = 0;
+            } else
+            {
+                health -= enemyDamage;
+            }
         }    
     }
 }

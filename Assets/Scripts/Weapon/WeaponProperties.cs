@@ -9,25 +9,27 @@ namespace Weapon {
         [SerializeField] private float minDamage;
         [SerializeField] private float maxDamage;
         private float damage;
+		private Animator animator;
 
 		void Start()
 		{
 			damage = Random.Range(minDamage, maxDamage);
+			animator = GetComponent<Animator>();
 		}
-
 
 		public float GetDamage()
 		{
 			return damage;
 		}
 
-		void OnCollisionEnter2D(Collision2D collision)
+		void OnTriggerEnter2D(Collider2D collision)
 		{
-			if(collision.gameObject.CompareTag("Enemy"))
-			{
-				EnemyProperties enemyProperties = collision.gameObject.GetComponent<EnemyProperties>();
-				enemyProperties.SetHealth(enemyProperties.GetHealth() - damage);
-			}	
-		}
+            if (collision.gameObject.CompareTag("Enemy") && animator.GetCurrentAnimatorStateInfo(0).IsName("use"))
+            {
+                Debug.Log("HIT");
+                EnemyProperties enemyProperties = collision.gameObject.GetComponent<EnemyProperties>();
+                enemyProperties.SetHealth(enemyProperties.GetHealth() - damage);
+            }
+        }
 	}	
 }
