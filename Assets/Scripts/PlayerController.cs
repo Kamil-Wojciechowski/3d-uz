@@ -1,4 +1,5 @@
 using Enemy;
+using Photon.Pun;
 using System;
 using TMPro;
 using Unity.VisualScripting;
@@ -23,23 +24,28 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb2d;
     private Vector3 startPosition;
     private Boolean canMove = true;
+    private PhotonView photonView;
     void Start()
     {
         rb2d = GetComponent<Rigidbody2D>();
         startPosition = transform.position;
-        healthText = GameObject.Find("HP").GetComponent<TextMeshProUGUI>();
+        healthText = GetComponentInChildren<TextMeshProUGUI>();
         animator = GetComponentInChildren<Animator>();
+        photonView = GetComponent<PhotonView>();
     }
     void Update()
     {
-        Movement();
-        AttackManager();
-        PlayerFaceDirection();
-        damageManager();
-        
-        if(healthText != null)
+        if (photonView.IsMine)
         {
-            healthText.text = Convert.ToInt32(health).ToString();
+            Movement();
+            AttackManager();
+            PlayerFaceDirection();
+            damageManager();
+
+            if (healthText != null)
+            {
+                healthText.text = Convert.ToInt32(health).ToString();
+            }
         }
     }
     private void Movement()
@@ -106,17 +112,22 @@ public class PlayerController : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Enemy"))
+        if (photonView.IsMine)
         {
-            float enemyDamage = collision.gameObject.GetComponent<EnemyProperties>().GetDamage();
-            
-            if (health <= 0)
+
+            if (collision.gameObject.CompareTag("Enemy"))
             {
-                health = 0;
-            } else
-            {
-                health -= enemyDamage;
+                float enemyDamage = collision.gameObject.GetComponent<EnemyProperties>().GetDamage();
+
+                if (health <= 0)
+                {
+                    health = 0;
+                }
+                else
+                {
+                    health -= enemyDamage;
+                }
             }
-        }    
+        }
     }
 }
