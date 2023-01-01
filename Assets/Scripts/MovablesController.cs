@@ -29,9 +29,5 @@ public class MovablesController : MonoBehaviour
                 gameObject.SetActive(false);   
             }
         }
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            rb.AddForce(rb.velocity);
-        }
     }
 }

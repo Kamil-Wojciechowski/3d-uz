@@ -1,6 +1,7 @@
 using Enemy;
 using Photon.Pun;
 using System;
+using System.Collections;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -18,6 +19,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private MouseButton Defense;
     [SerializeField] private KeyCode altAttack;
     [SerializeField] private KeyCode altDefense;
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip hit;
     private Animator animator;    
     public int speed;
 
@@ -32,9 +35,12 @@ public class PlayerController : MonoBehaviour
         healthText = GetComponentInChildren<TextMeshProUGUI>();
         animator = GetComponentInChildren<Animator>();
         photonView = GetComponent<PhotonView>();
+        StartCoroutine(Heal());
+
     }
     void Update()
     {
+        
         if (photonView.IsMine)
         {
             Movement();
@@ -45,6 +51,15 @@ public class PlayerController : MonoBehaviour
             if (healthText != null)
             {
                 healthText.text = "HP: "+Convert.ToInt32(health).ToString();
+            }
+            
+        }
+    }
+    private IEnumerator Heal() {
+        while (true) {
+            yield return new WaitForSeconds(2);
+            if (health < 100 && canMove == true) {
+                health++;
             }
         }
     }
@@ -79,6 +94,7 @@ public class PlayerController : MonoBehaviour
             {
                 animator.SetBool("cli", true);
             }
+            audioSource.PlayOneShot(hit);
         }
 
         if(animator.GetCurrentAnimatorStateInfo(0).IsName("back")) {
@@ -126,6 +142,7 @@ public class PlayerController : MonoBehaviour
                 else
                 {
                     health -= enemyDamage;
+                    
                 }
             }
         }
