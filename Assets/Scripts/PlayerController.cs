@@ -58,7 +58,7 @@ public class PlayerController : MonoBehaviour
     private IEnumerator Heal() {
         while (true) {
             yield return new WaitForSeconds(2);
-            if (health < 100 && canMove == true) {
+            if (health < 99 && canMove) {
                 health++;
             }
         }
