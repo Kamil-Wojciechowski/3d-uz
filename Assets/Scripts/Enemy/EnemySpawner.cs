@@ -19,7 +19,7 @@ namespace Enemy {
 
         private void SpawnEnemy() {
             Vector3 position = this.GetRandomPosition();
-            GameObject enemy = PhotonNetwork.Instantiate(this.enemyPrefab.name, position,
+            GameObject enemy = PhotonNetwork.InstantiateRoomObject(this.enemyPrefab.name, position,
                 Quaternion.FromToRotation(Vector3.up, (this.transform.position - position)));
             enemy.transform.parent = this.container;
         }

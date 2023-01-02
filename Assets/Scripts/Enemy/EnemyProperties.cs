@@ -1,4 +1,5 @@
 using System;
+using Photon.Pun;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,7 +7,7 @@ using Weapon;
 using Random = UnityEngine.Random;
 
 namespace Enemy {
-	public class EnemyProperties : MonoBehaviour {
+	public class EnemyProperties : MonoBehaviour, IPunObservable {
 		[SerializeField] public float speed;
         [SerializeField] private float minHealth;
         [SerializeField] private float maxHealth;
@@ -85,5 +86,15 @@ namespace Enemy {
 			return health / setHealth;
 		}
 
-    }	
+        public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
+	        if (stream.IsWriting) {
+		        stream.SendNext(this.isDead);
+		        stream.SendNext(this.health);
+	        }
+	        else {
+		        this.isDead = (bool)stream.ReceiveNext();
+		        this.health = (float)stream.ReceiveNext();
+	        }
+        }
+	}
 }

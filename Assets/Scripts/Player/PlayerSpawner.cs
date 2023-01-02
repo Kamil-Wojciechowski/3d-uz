@@ -10,6 +10,8 @@ namespace Player {
 		[SerializeField] private GameObject player;
     
 		void Start() {
+			PhotonNetwork.SendRate = 40;
+			PhotonNetwork.SerializationRate = 40;
 			PhotonNetwork.ConnectUsingSettings();
 		}
 
