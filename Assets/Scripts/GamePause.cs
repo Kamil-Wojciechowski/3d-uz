@@ -21,12 +21,14 @@ public class GamePause : MonoBehaviour
     {
         if (Input.GetKeyDown(escape))
         {
+            healthText = GameObject.Find("HP");
             Time.timeScale = 0.0f;
             SetVisibility(false);
         }
     }
 
-    private void SetVisibility(bool visible) { 
+    private void SetVisibility(bool visible) 
+    {
         PauseMenu.SetActive(!visible);
         Score.SetActive(visible);
         healthText.SetActive(visible);

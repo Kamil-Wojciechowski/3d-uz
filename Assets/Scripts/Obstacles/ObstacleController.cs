@@ -1,3 +1,4 @@
+using Enemy;
 using Photon.Pun;
 using UnityEngine;
 
@@ -11,9 +12,13 @@ namespace Obstacles {
         
             if (collision.gameObject.CompareTag("Enemy"))
             {
-                this.collisions--;
-                if (this.collisions < 0) {
-                    PhotonNetwork.Destroy(this.gameObject);   
+                if(!collision.gameObject.GetComponent<EnemyProperties>().GetIsDead())
+                {
+                    this.collisions--;
+                    if (this.collisions < 0)
+                    {
+                        PhotonNetwork.Destroy(this.gameObject);
+                    }
                 }
             }
         }

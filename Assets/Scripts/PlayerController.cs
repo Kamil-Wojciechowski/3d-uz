@@ -134,15 +134,10 @@ public class PlayerController : MonoBehaviour
             if (collision.gameObject.CompareTag("Enemy"))
             {
                 float enemyDamage = collision.gameObject.GetComponent<EnemyProperties>().GetDamage();
-
-                if (health <= 0)
+                
+                if ((health -= enemyDamage) <= 0)
                 {
                     health = 0;
-                }
-                else
-                {
-                    health -= enemyDamage;
-                    
                 }
             }
         }

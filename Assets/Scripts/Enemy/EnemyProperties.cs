@@ -22,6 +22,9 @@ namespace Enemy {
 		private TextMeshProUGUI scoreText;
         [SerializeField] public float minimumFollowDistance;
         [SerializeField] public float maximumFollowDistance;
+        [SerializeField] private AudioSource audioSource;
+        [SerializeField] private AudioClip deathSound;
+
 
         void Start()
 		{
@@ -55,7 +58,7 @@ namespace Enemy {
                     this.damage = 0;
                     this.speed = 0;
                     isDead = true;
-					Debug.Log("Enemy Dead");
+					audioSource.Play();
                 }
             }
 			
@@ -90,10 +93,12 @@ namespace Enemy {
 	        if (stream.IsWriting) {
 		        stream.SendNext(this.isDead);
 		        stream.SendNext(this.health);
+				stream.SendNext(this.damage);
 	        }
 	        else {
 		        this.isDead = (bool)stream.ReceiveNext();
 		        this.health = (float)stream.ReceiveNext();
+				this.damage = (float)stream.ReceiveNext();
 	        }
         }
 	}

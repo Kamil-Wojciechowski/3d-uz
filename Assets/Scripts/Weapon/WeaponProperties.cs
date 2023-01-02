@@ -10,12 +10,19 @@ namespace Weapon {
         [SerializeField] private float maxDamage;
         private float damage;
 		private Animator animator;
+		private Boolean attack;
 
 		void Start()
 		{
 			damage = Random.Range(minDamage, maxDamage);
 			animator = GetComponent<Animator>();
 		}
+
+		void FixedUpdate()
+		{
+			attack = (animator.GetCurrentAnimatorStateInfo(0).IsName("use") || animator.GetCurrentAnimatorStateInfo(0).IsName("back"));
+
+        }
 
 		public float GetDamage()
 		{
@@ -24,7 +31,7 @@ namespace Weapon {
 
 		void OnTriggerEnter2D(Collider2D collision)
 		{
-            if (collision.gameObject.CompareTag("Enemy") && animator.GetCurrentAnimatorStateInfo(0).IsName("use"))
+            if (collision.gameObject.CompareTag("Enemy") && attack)
             {
                 Debug.Log("HIT");
                 EnemyProperties enemyProperties = collision.gameObject.GetComponent<EnemyProperties>();
