@@ -93,11 +93,13 @@ namespace Enemy {
 	        if (stream.IsWriting) {
 		        stream.SendNext(this.isDead);
 		        stream.SendNext(this.health);
+		        stream.SendNext(this.setHealth);
 				stream.SendNext(this.damage);
 	        }
 	        else {
 		        this.isDead = (bool)stream.ReceiveNext();
 		        this.health = (float)stream.ReceiveNext();
+		        this.setHealth = (float)stream.ReceiveNext();
 				this.damage = (float)stream.ReceiveNext();
 	        }
         }
