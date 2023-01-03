@@ -115,7 +115,7 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(x);
 
-        PhotonNetwork.LeaveRoom();
+        PhotonNetwork.Disconnect();
         SceneManager.LoadScene("MainMenu");
     }
     private void PlayerFaceDirection()
