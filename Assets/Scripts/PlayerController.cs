@@ -139,6 +139,7 @@ public class PlayerController : MonoBehaviour
         if(health <= 0)
         {
             canMove = false;
+            GameObject.Find("WinText").GetComponent<TextMeshProUGUI>().text = "You're dead!";
         }
     }
 
@@ -155,6 +156,12 @@ public class PlayerController : MonoBehaviour
                 {
                     health = 0;
                 }
+            }
+            if (collision.gameObject.CompareTag("Player") && !canMove)
+            {
+                health = 1;
+                canMove = true;
+                GameObject.Find("WinText").GetComponent<TextMeshProUGUI>().text = " ";
             }
         }
     }
