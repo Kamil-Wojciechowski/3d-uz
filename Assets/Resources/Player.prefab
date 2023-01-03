@@ -307,8 +307,8 @@ MonoBehaviour:
   altAttack: 0
   altDefense: 0
   audioSource: {fileID: 3446437445154746443}
-  hit: {fileID: 8300000, guid: 43955de9ec750b24e859ceec1cbe780c, type: 3}
   speed: 2
+  winText: {fileID: 0}
 --- !u!50 &7523854279045316029
 Rigidbody2D:
   serializedVersion: 4

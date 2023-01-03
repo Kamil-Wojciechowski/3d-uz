@@ -59,8 +59,8 @@ namespace Enemy {
                     this.speed = 0;
                     isDead = true;
 					audioSource.Play();
-                    StartCoroutine(delay(10));
-                    this.gameObject.SetActive(false);
+                    StartCoroutine(delay(100));
+                    
                 }
             }
 			
@@ -94,6 +94,8 @@ namespace Enemy {
         private IEnumerator delay(float x)
         {
             yield return new WaitForSeconds(x);
+
+            this.gameObject.SetActive(false);
         }
 
         public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
