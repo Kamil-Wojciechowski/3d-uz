@@ -439,7 +439,6 @@ MonoBehaviour:
   minimumFollowDistance: 1.2
   maximumFollowDistance: 5
   audioSource: {fileID: 2863494706899164545}
-  deathSound: {fileID: 0}
 --- !u!114 &3950959150956961133
 MonoBehaviour:
   m_ObjectHideFlags: 0

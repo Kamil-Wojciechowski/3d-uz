@@ -60,7 +60,7 @@ public class PlayerController : MonoBehaviour
             if (enemies.Length == 0)
             {
                 GameObject.Find("WinText").GetComponent<TextMeshProUGUI>().text = "You won!";
-                StartCoroutine(delay(100));
+                StartCoroutine(delay(10));
                 
             }
 

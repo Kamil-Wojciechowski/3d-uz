@@ -59,7 +59,7 @@ namespace Enemy {
                     this.speed = 0;
                     isDead = true;
 					audioSource.Play();
-                    StartCoroutine(delay(100));
+                    StartCoroutine(delay(2));
                     
                 }
             }
