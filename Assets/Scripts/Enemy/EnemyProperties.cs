@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Photon.Pun;
 using TMPro;
 using UnityEngine;
@@ -23,7 +24,6 @@ namespace Enemy {
         [SerializeField] public float minimumFollowDistance;
         [SerializeField] public float maximumFollowDistance;
         [SerializeField] private AudioSource audioSource;
-        [SerializeField] private AudioClip deathSound;
 
 
         void Start()
@@ -59,6 +59,8 @@ namespace Enemy {
                     this.speed = 0;
                     isDead = true;
 					audioSource.Play();
+                    StartCoroutine(delay(10));
+                    this.gameObject.SetActive(false);
                 }
             }
 			
@@ -88,6 +90,11 @@ namespace Enemy {
 		{
 			return health / setHealth;
 		}
+
+        private IEnumerator delay(float x)
+        {
+            yield return new WaitForSeconds(x);
+        }
 
         public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
 	        if (stream.IsWriting) {

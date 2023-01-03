@@ -1,47 +1,134 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 
 public class MenuManager : MonoBehaviour
 {
-    [SerializeField] private GameObject Author;
-    [SerializeField] private GameObject StartGame;
-    [SerializeField] private GameObject EndGame;
-    [SerializeField] private GameObject Settings;
-    [SerializeField] private GameObject Logo1;
-    [SerializeField] private GameObject Logo2;
-    [SerializeField] private GameObject Bye;
     [SerializeField] private AudioMixer audioMixer;
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private Resolution[] resolutions;
+    [SerializeField] private Dropdown resolutionDropdown;
+    [SerializeField] private Toggle fullscreen, vsync;
+    [SerializeField] private Slider volumeSlider;
+
+    [SerializeField] private GameObject SettingsView;
+    [SerializeField] private GameObject ExitView;
+    [SerializeField] private GameObject MenuView;
 
     void Start()
     {
-        SetExitLogo(false);
-        audioMixer.SetFloat("Volume", 5.0f);
+        float volume = 0;
+        SetExitView(false);
+        SetSettingsView(false);
+        SetMenuView(true);
+        SetResolutions();
+        SetToggles();
+        audioSource.Play();
+        
+        if (PlayerPrefs.HasKey("masterVolume"))
+        {
+            volume = PlayerPrefs.GetFloat("masterVolume");
+        }
+        volumeSlider.value = volume;
         //Music: Bensound.com/free-music-for-videos
     }
 
+    private void SetExitView(bool status)
+    {
+        ExitView.SetActive(status);
+    }
+
+    private void SetSettingsView(bool status)
+    {
+        SettingsView.SetActive(status);
+    }
+
+    private void SetMenuView(bool status)
+    {
+        MenuView.SetActive(status);
+    }
+
+    public void SetVolume(float volume)
+    {
+       audioMixer.SetFloat("Volume", volume);
+    }
+    public void SetRes(int res, bool fullscreen)
+    {
+        Resolution resolution = resolutions[res];
+        Screen.SetResolution(resolution.width, resolution.height, fullscreen);
+    }
+    private void SetToggles()
+    {
+        fullscreen.isOn = Screen.fullScreen;
+
+        if (QualitySettings.vSyncCount == 0)
+        {
+            vsync.isOn = false;
+        }
+        else
+        {
+            vsync.isOn = true;
+        }
+    }
+
+    private void SetResolutions()
+    {
+        resolutions = Screen.resolutions.Distinct().ToArray();
+        resolutionDropdown.ClearOptions();
+        List<string> options = new List<string>();
+        int currentIndex = 0;
+        for (int i = 0; i < resolutions.Length; i++)
+        {
+            string item = resolutions[i].width + " x " + resolutions[i].height;
+            if (Screen.currentResolution.refreshRate == resolutions[i].refreshRate) {
+                options.Add(item);
+            }
+            if (Screen.currentResolution.width == resolutions[i].width && Screen.currentResolution.height == resolutions[i].height)
+            {
+                currentIndex = i;
+            }
+        }
+        resolutionDropdown.AddOptions(options);
+        resolutionDropdown.value = currentIndex;
+        resolutionDropdown.RefreshShownValue();
+    }
+
+    public void SaveSettings()
+    {
+        if (vsync.isOn)
+        {
+            QualitySettings.vSyncCount = 1;
+        }
+        else
+        {
+            QualitySettings.vSyncCount = 0;
+        }
+        SetRes(resolutionDropdown.value, fullscreen.isOn);
+
+        PlayerPrefs.SetFloat("masterVolume", volumeSlider.value);
+        PlayerPrefs.Save();
+    }
+
+    public void CancelSettings()
+    {
+        SetSettingsView(false);
+        SetMenuView(true);
+    }
     public void OnEndGame()
     {
-        SetExitLogo(true);
-
-        delay(1000);
+        SetExitView(true);
+        SetSettingsView(false);
+        SetMenuView(false);
+        StartCoroutine(delay(10));
         Application.Quit();
     }
 
-    private void SetExitLogo(bool status)
-    {
-        Bye.SetActive(status);
-        Logo2.SetActive(status);
-
-        Author.SetActive(!status);
-        StartGame.SetActive(!status);
-        Settings.SetActive(!status);
-        EndGame.SetActive(!status);
-        Logo1.SetActive(!status);
-    }
+   
 
     public void OnStartGame()
     {
@@ -50,12 +137,8 @@ public class MenuManager : MonoBehaviour
 
     public void OnSettings()
     {
-        SceneManager.LoadScene("SettingsScene");
-    }
-
-    void Update()
-    {
-
+        SetSettingsView(true);
+        SetMenuView(false);
     }
 
     private IEnumerator delay(float x)

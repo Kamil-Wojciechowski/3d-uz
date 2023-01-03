@@ -5,6 +5,7 @@ using System.Collections;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Weapon;
 
 public class PlayerController : MonoBehaviour
@@ -20,7 +21,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private KeyCode altAttack;
     [SerializeField] private KeyCode altDefense;
     [SerializeField] private AudioSource audioSource;
-    [SerializeField] private AudioClip hit;
+
     private Animator animator;    
     public int speed;
 
@@ -28,6 +29,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 startPosition;
     private Boolean canMove = true;
     private PhotonView photonView;
+    [SerializeField] GameObject winText;
     void Start()
     {
         rb2d = GetComponent<Rigidbody2D>();
@@ -52,7 +54,17 @@ public class PlayerController : MonoBehaviour
             {
                 healthText.text = "HP: "+Convert.ToInt32(health).ToString();
             }
-            
+
+            GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+
+            if (enemies.Length == 0)
+            {
+                winText.GetComponent<TextMeshProUGUI>().text = "You won!";
+                StartCoroutine(delay(10));
+                PhotonNetwork.LeaveRoom();
+                SceneManager.LoadScene("MainMenu");
+            }
+
         }
     }
     private IEnumerator Heal() {
@@ -94,14 +106,17 @@ public class PlayerController : MonoBehaviour
             {
                 animator.SetBool("cli", true);
             }
-            audioSource.PlayOneShot(hit);
+            audioSource.Play();
         }
 
         if(animator.GetCurrentAnimatorStateInfo(0).IsName("back")) {
             animator.SetBool("cli", false);
         }
     }
-
+    private IEnumerator delay(float x)
+    {
+        yield return new WaitForSeconds(x);
+    }
     private void PlayerFaceDirection()
     {
         if(canMove)
