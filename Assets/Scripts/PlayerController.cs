@@ -61,9 +61,8 @@ public class PlayerController : MonoBehaviour
             {
                 GameObject.Find("WinText").GetComponent<TextMeshProUGUI>().text = "You won!";
                 StartCoroutine(delay(10));
-                
-            }
 
+            }
         }
     }
     private IEnumerator Heal() {
