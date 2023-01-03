@@ -95,7 +95,7 @@ namespace Enemy {
         {
             yield return new WaitForSeconds(x);
 
-            this.gameObject.SetActive(false);
+            this.gameObject.SetActive(!isDead);
         }
 
         public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
