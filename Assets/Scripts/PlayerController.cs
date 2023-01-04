@@ -67,14 +67,32 @@ public class PlayerController : MonoBehaviourPun
                 StartCoroutine(delay(10));
 
             }
-            PlayerController[] controllers = FindObjectsOfType<PlayerController>();
-            this.players = (from controller in controllers where controller.canMove select controller.gameObject).ToList();
-            if (players.Count == 0) {
+            
+            if (GetLostGame()) {
                 GameObject.Find("WinText").GetComponent<TextMeshProUGUI>().text = "You lost!";
+                Debug.Log("Koniec");
                 StartCoroutine(delay(10));
             }
         }
         
+    }
+
+    private bool GetLostGame()
+    {
+        PlayerController[] controllers = FindObjectsOfType<PlayerController>();
+        this.players = (from controller in controllers where controller.canMove select controller.gameObject).ToList();
+        
+        bool lost = true;
+        
+        foreach (GameObject player in this.players)
+        {
+            if(player.GetComponent<PlayerController>().health > 0)
+            {
+                lost = false;
+            }
+        }
+
+        return lost;
     }
     private IEnumerator Heal() {
         while (true) {
