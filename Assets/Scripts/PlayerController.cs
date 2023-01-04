@@ -10,7 +10,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Weapon;
 
-public class PlayerController : MonoBehaviourPun, IPunObservable
+public class PlayerController : MonoBehaviourPun
 {
     [SerializeField] private float health;
     private TextMeshProUGUI healthText;
@@ -81,19 +81,10 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     {
         PlayerController[] controllers = FindObjectsOfType<PlayerController>();
         this.players = (from controller in controllers where controller.canMove select controller.gameObject).ToList();
-        
-        bool lost = true;
-        
-        foreach (GameObject player in this.players)
-        {
-            if(player.GetComponent<PlayerController>().health > 0)
-            {
-                lost = false;
-            }
-        }
 
-        return lost;
+        return this.players.Count == 0;
     }
+    
     private IEnumerator Heal() {
         while (true) {
             yield return new WaitForSeconds(2);
@@ -167,8 +158,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     {
         if(health <= 0)
         { 
-            this.photonView.RPC("SetPlayerColor", RpcTarget.AllBuffered, true);
-            canMove = false;
+            this.photonView.RPC("SetPlayerDeath", RpcTarget.AllBuffered, true);
             GameObject.Find("WinText").GetComponent<TextMeshProUGUI>().text = "You're dead!";
         }
     }
@@ -188,27 +178,26 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
                 }
             }
             if (collision.gameObject.CompareTag("Player") && !canMove) {
-                this.photonView.RPC("SetPlayerColor", RpcTarget.AllBuffered, false);
-                health = 1;
-                canMove = true;
+                this.photonView.RPC("SetPlayerDeath", RpcTarget.AllBuffered, false);
                 GameObject.Find("WinText").GetComponent<TextMeshProUGUI>().text = " ";
             }
         }
     }
 
     [PunRPC]
-    private void SetPlayerColor(bool isDead) {
-        this.photonView.gameObject.GetComponent<SpriteRenderer>().color = isDead ? this.cDead : this.cAlive;
-    }
+    private void SetPlayerDeath(bool isDead) {
+        GameObject player = this.photonView.gameObject;
+        SpriteRenderer pRenderer = player.GetComponent<SpriteRenderer>();
+        PlayerController pController = player.GetComponent<PlayerController>();
 
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
-        if (stream.IsWriting) {
-            stream.SendNext(this.health);
-            stream.SendNext(this.canMove);
+        if (!isDead) {
+            pRenderer.color = this.cAlive;
+            pController.health = 1;
+            pController.canMove = true;
         }
         else {
-            this.health = (float)stream.ReceiveNext();
-            this.canMove = (Boolean)stream.ReceiveNext();
+            pRenderer.color = this.cDead;
+            pController.canMove = false;
         }
     }
 }
