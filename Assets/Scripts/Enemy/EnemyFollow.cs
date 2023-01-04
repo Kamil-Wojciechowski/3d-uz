@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Photon.Pun;
 using Unity.Mathematics;
@@ -6,22 +7,21 @@ using UnityEngine;
 
 namespace Enemy {
     public class EnemyFollow : MonoBehaviourPun, IPunObservable {
-        private GameObject[] players;
+        private List<GameObject> players;
         private EnemyProperties properties;
-        [SerializeField] private float distance;
-        private float minimumDistance;
 
         private void Start() {
             this.properties = this.GetComponent<EnemyProperties>();
         }
 
         private void Update() {
-            this.players = GameObject.FindGameObjectsWithTag("Player");
+            PlayerController[] controllers = FindObjectsOfType<PlayerController>();
+            this.players = (from controller in controllers where controller.canMove select controller.gameObject).ToList();
             this.Follow();
         }
 
         private void Follow() {
-            if (this.players.Length == 0 || this.properties.GetIsDead() || !PhotonNetwork.IsMasterClient) return;
+            if (this.players.Count == 0 || this.properties.GetIsDead() || !PhotonNetwork.IsMasterClient) return;
             
             Vector3 currentPosition = this.transform.position;
             GameObject followPlayer = this.players[0];

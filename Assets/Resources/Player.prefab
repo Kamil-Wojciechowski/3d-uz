@@ -308,6 +308,7 @@ MonoBehaviour:
   altDefense: 0
   audioSource: {fileID: 3446437445154746443}
   speed: 2
+  canMove: 1
 --- !u!50 &7523854279045316029
 Rigidbody2D:
   serializedVersion: 4

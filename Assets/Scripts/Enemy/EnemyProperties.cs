@@ -35,8 +35,7 @@ namespace Enemy {
 			slider.value = CalculateHealth();
 		}
 
-		void Update()
-		{
+		void Update() {
             slider.value = CalculateHealth();
 
             if (isDead)
@@ -95,7 +94,9 @@ namespace Enemy {
         {
             yield return new WaitForSeconds(x);
 
-            PhotonNetwork.Destroy(this.gameObject);
+            if (PhotonNetwork.IsMasterClient) {
+	            PhotonNetwork.Destroy(this.gameObject);    
+            }
         }
 
         public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {

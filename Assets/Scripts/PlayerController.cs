@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Weapon;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviourPun
 {
     [SerializeField] private float health;
     private TextMeshProUGUI healthText;
@@ -27,8 +27,10 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D rb2d;
     private Vector3 startPosition;
-    private Boolean canMove = true;
-    private PhotonView photonView;
+    public Boolean canMove = true;
+    
+    private Color cAlive = Color.black;
+    private Color cDead = Color.cyan;
     
     void Start()
     {
@@ -36,7 +38,6 @@ public class PlayerController : MonoBehaviour
         startPosition = transform.position;
         healthText = GetComponentInChildren<TextMeshProUGUI>();
         animator = GetComponentInChildren<Animator>();
-        photonView = GetComponent<PhotonView>();
         StartCoroutine(Heal());
 
     }
@@ -137,7 +138,8 @@ public class PlayerController : MonoBehaviour
     private void damageManager()
     {
         if(health <= 0)
-        {
+        { 
+            this.photonView.RPC("SetPlayerColor", RpcTarget.AllBuffered, true);
             canMove = false;
             GameObject.Find("WinText").GetComponent<TextMeshProUGUI>().text = "You're dead!";
         }
@@ -157,12 +159,17 @@ public class PlayerController : MonoBehaviour
                     health = 0;
                 }
             }
-            if (collision.gameObject.CompareTag("Player") && !canMove)
-            {
+            if (collision.gameObject.CompareTag("Player") && !canMove) {
+                this.photonView.RPC("SetPlayerColor", RpcTarget.AllBuffered, false);
                 health = 1;
                 canMove = true;
                 GameObject.Find("WinText").GetComponent<TextMeshProUGUI>().text = " ";
             }
         }
+    }
+
+    [PunRPC]
+    private void SetPlayerColor(bool isDead) {
+        this.photonView.gameObject.GetComponent<SpriteRenderer>().color = isDead ? this.cDead : this.cAlive;
     }
 }
