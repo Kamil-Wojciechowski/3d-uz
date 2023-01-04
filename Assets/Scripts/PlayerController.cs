@@ -2,6 +2,8 @@ using Enemy;
 using Photon.Pun;
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -24,6 +26,7 @@ public class PlayerController : MonoBehaviourPun
 
     private Animator animator;    
     public int speed;
+    private List<GameObject> players;
 
     private Rigidbody2D rb2d;
     private Vector3 startPosition;
@@ -64,7 +67,14 @@ public class PlayerController : MonoBehaviourPun
                 StartCoroutine(delay(10));
 
             }
+            PlayerController[] controllers = FindObjectsOfType<PlayerController>();
+            this.players = (from controller in controllers where controller.canMove select controller.gameObject).ToList();
+            if (players.Count == 0) {
+                GameObject.Find("WinText").GetComponent<TextMeshProUGUI>().text = "You lost!";
+                StartCoroutine(delay(10));
+            }
         }
+        
     }
     private IEnumerator Heal() {
         while (true) {
