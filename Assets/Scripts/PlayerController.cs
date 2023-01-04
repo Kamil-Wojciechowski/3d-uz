@@ -203,12 +203,12 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
         if (stream.IsWriting) {
-            stream.SendNext(this.canMove);
             stream.SendNext(this.health);
+            stream.SendNext(this.canMove);
         }
         else {
-            this.canMove = (bool)stream.ReceiveNext();
             this.health = (float)stream.ReceiveNext();
+            this.canMove = (Boolean)stream.ReceiveNext();
         }
     }
 }
