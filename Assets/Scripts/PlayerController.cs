@@ -10,7 +10,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Weapon;
 
-public class PlayerController : MonoBehaviourPun
+public class PlayerController : MonoBehaviourPun, IPunObservable
 {
     [SerializeField] private float health;
     private TextMeshProUGUI healthText;
@@ -199,5 +199,16 @@ public class PlayerController : MonoBehaviourPun
     [PunRPC]
     private void SetPlayerColor(bool isDead) {
         this.photonView.gameObject.GetComponent<SpriteRenderer>().color = isDead ? this.cDead : this.cAlive;
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
+        if (stream.IsWriting) {
+            stream.SendNext(this.canMove);
+            stream.SendNext(this.health);
+        }
+        else {
+            this.canMove = (bool)stream.ReceiveNext();
+            this.health = (float)stream.ReceiveNext();
+        }
     }
 }
