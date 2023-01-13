@@ -81,19 +81,10 @@ public class PlayerController : MonoBehaviourPun
     {
         PlayerController[] controllers = FindObjectsOfType<PlayerController>();
         this.players = (from controller in controllers where controller.canMove select controller.gameObject).ToList();
-        
-        bool lost = true;
-        
-        foreach (GameObject player in this.players)
-        {
-            if(player.GetComponent<PlayerController>().health > 0)
-            {
-                lost = false;
-            }
-        }
 
-        return lost;
+        return this.players.Count == 0;
     }
+    
     private IEnumerator Heal() {
         while (true) {
             yield return new WaitForSeconds(2);
@@ -167,8 +158,7 @@ public class PlayerController : MonoBehaviourPun
     {
         if(health <= 0)
         { 
-            this.photonView.RPC("SetPlayerColor", RpcTarget.AllBuffered, true);
-            canMove = false;
+            this.photonView.RPC("SetPlayerDeath", RpcTarget.AllBuffered, true);
             GameObject.Find("WinText").GetComponent<TextMeshProUGUI>().text = "You're dead!";
         }
     }
@@ -188,16 +178,26 @@ public class PlayerController : MonoBehaviourPun
                 }
             }
             if (collision.gameObject.CompareTag("Player") && !canMove) {
-                this.photonView.RPC("SetPlayerColor", RpcTarget.AllBuffered, false);
-                health = 1;
-                canMove = true;
+                this.photonView.RPC("SetPlayerDeath", RpcTarget.AllBuffered, false);
                 GameObject.Find("WinText").GetComponent<TextMeshProUGUI>().text = " ";
             }
         }
     }
 
     [PunRPC]
-    private void SetPlayerColor(bool isDead) {
-        this.photonView.gameObject.GetComponent<SpriteRenderer>().color = isDead ? this.cDead : this.cAlive;
+    private void SetPlayerDeath(bool isDead) {
+        GameObject player = this.photonView.gameObject;
+        SpriteRenderer pRenderer = player.GetComponent<SpriteRenderer>();
+        PlayerController pController = player.GetComponent<PlayerController>();
+
+        if (!isDead) {
+            pRenderer.color = this.cAlive;
+            pController.health = 1;
+            pController.canMove = true;
+        }
+        else {
+            pRenderer.color = this.cDead;
+            pController.canMove = false;
+        }
     }
 }
