@@ -15657,7 +15657,7 @@ MonoBehaviour:
   container: {fileID: 1048760610}
   enemyPrefab: {fileID: 3305508068228506669, guid: f9c7f60108c2e4546935a0f3e6104b35,
     type: 3}
-  enemyCount: 4
+  enemyCount: 10
   spawnRadius: 15
 --- !u!114 &1330240920
 MonoBehaviour:
