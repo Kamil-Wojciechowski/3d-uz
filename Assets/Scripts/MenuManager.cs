@@ -116,8 +116,16 @@ public class MenuManager : MonoBehaviour
 
     public void CancelSettings()
     {
+        float volume = 0;
         SetSettingsView(false);
         SetMenuView(true);
+        SetResolutions();
+        SetToggles();
+        if (PlayerPrefs.HasKey("masterVolume"))
+        {
+            volume = PlayerPrefs.GetFloat("masterVolume");
+        }
+        volumeSlider.value = volume;
     }
     public void OnEndGame()
     {
@@ -125,7 +133,6 @@ public class MenuManager : MonoBehaviour
         SetSettingsView(false);
         SetMenuView(false);
         StartCoroutine(delay(10));
-        Application.Quit();
     }
 
    
@@ -144,5 +151,6 @@ public class MenuManager : MonoBehaviour
     private IEnumerator delay(float x)
     {
         yield return new WaitForSeconds(x);
+        Application.Quit();
     }
 }
