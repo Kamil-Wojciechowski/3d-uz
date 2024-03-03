@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -10,6 +11,7 @@ public class GamePause : MonoBehaviour
     [SerializeField] private KeyCode escape = KeyCode.Escape;
     [SerializeField] private GameObject Score;
     [SerializeField] private GameObject PauseMenu;
+    [SerializeField] private GameObject healthText;
     void Start()
     {
         Time.timeScale = 1.0f;
@@ -19,14 +21,17 @@ public class GamePause : MonoBehaviour
     {
         if (Input.GetKeyDown(escape))
         {
+            healthText = GameObject.Find("HP");
             Time.timeScale = 0.0f;
             SetVisibility(false);
         }
     }
 
-    private void SetVisibility(bool visible) { 
+    private void SetVisibility(bool visible) 
+    {
         PauseMenu.SetActive(!visible);
         Score.SetActive(visible);
+        healthText.SetActive(visible);
     }
     public void OnResumeGame() {
         Time.timeScale = 1.0f;
@@ -35,5 +40,6 @@ public class GamePause : MonoBehaviour
     public void OnExitGame()
     {
         SceneManager.LoadScene("MainMenu");
+        PhotonNetwork.Disconnect();
     }
 }
